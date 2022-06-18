@@ -2,13 +2,13 @@
   padding: 0;
   margin: 0;
   border: 0;
+  // font-family: sans-serif;
 }
 
 *,
 *::before,
 *::after {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 :focus,
@@ -37,15 +37,13 @@ body {
   font-size: 14px;
 }
 
-@media (prefers-color-scheme: light) {
-  body {
+body {
+  @media (prefers-color-scheme: light) {
     color: #222;
     background: #fff;
   }
-}
 
-@media (prefers-color-scheme: dark) {
-  body {
+  @media (prefers-color-scheme: dark) {
     color: #eee;
     background: #202020;
   }
@@ -95,22 +93,4 @@ h5,
 h6 {
   font-size: inherit;
   font-weight: 400;
-}
-
-@media (prefers-color-scheme: light) {
-  body {
-    color: #222;
-    background: #fff;
-    -webkit-transition: all ease-in-out 0.1s;
-    transition: all ease-in-out 0.1s;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    color: #eee;
-    background: #202020;
-    -webkit-transition: all ease-in-out 0.1s;
-    transition: all ease-in-out 0.1s;
-  }
 }
