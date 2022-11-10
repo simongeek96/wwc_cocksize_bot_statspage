@@ -1,93 +1,46 @@
-const xhr = new XMLHttpRequest();
-let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTU1Nzc5MzIsImp0aSI6IjEyMyIsInN1YiI6IjQ0NDA0OTkwNSJ9.4jAgFQqQB4hFSg3fcO10Gnzd4g9rhWo7mzLejh5anVk';
-let refreshToken = '91d731a3950417c891a7edcaefff356ed4c6c30d07b8ff595e4b6e744c72db67';
 const requestURL = 'http://95.216.195.202:1488/api/stats';
 const refreshURL = 'http://95.216.195.202:1488/auth/refresh';
+let accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjgxMTExMDUsImp0aSI6IjEyMyIsInN1YiI6IjQ0NDA0OTkwNSJ9.tW6gev502JQssBfbpxKARsjEb_IPWtr3krmINheLDyA';
+let refreshToken = 'c13be61d632ac7f28b4b40d0e1c61f5e98d4b98d951ba75dcc6f067c65a8153c';
+let expiresIn = 900;
 
-function sendRequest(method, url) {
-  return new Promise((resolve, reject) => {
-    xhr.open(method, url, true);
-    xhr.responseType = 'json';
-    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
-    xhr.send();
-
-    // console.log(xhr.response);
-    // console.log(fetch.response);
-
-    xhr.onload = () => {
-      if (xhr.status >= 400) {
-        resolve(xhr.response);
-      } else {
-        reject(xhr.response);
-      }
+async function getData() {
+  let response = await fetch(requestURL, {
+    headers: {
+      Authorization: 'Bearer ' + accessToken,
+      'Content-Type': 'application/json;charset=utf-8'
     }
+  });
+  let content = await response.json();
+  console.log(content.data);
 
-    xhr.error = () => {
-      reject(xhr.response);
-    }
 
-  })
+  function byField(field) {
+    return (a, b) => a[field] < b[field] ? 1 : -1;
+  }
+
+  content.data.sort(byField('CockSize'));
+
+  let list = document.querySelector('.stats__table');
+
+  for (let key in content.data) {
+    list.innerHTML += `
+      <tr class="stats__table_row">
+        <td class="stats__table_data-username">
+          ${content.data[key].Username}
+        </td>
+        <td class="stats__table_data-firstname">
+          ${content.data[key].FirstName}
+        </td>
+        <td class="stats__table_data-lastname">
+          ${content.data[key].LastName}
+        </td>
+        <td class="stats__table_data-cocksize">
+          ${content.data[key].CockSize}
+        </td>
+      </tr>
+    `
+  }
 }
 
-sendRequest('GET', requestURL)
-  .then(data => console.log(data))
-  .catch(err => console.log(err));
-
-//   const body = {
-//     token: refreshToken,
-//   }
-
-
-// function sendRefresh(method, url, body = null) {
-//   return new Promise((resolve, reject) => {
-//     xhr.open(method, url, true);
-//     xhr.send();
-
-//     xhr.onload = () => {
-//       if (xhr.status >= 400) {
-//         resolve(xhr.response);
-//       } else {
-//         reject(xhr.response);
-//       }
-//     }
-
-//     xhr.error = () => {
-//       reject(xhr.response);
-//     }
-//   })
-// }
-
-// sendRefresh('POST', refreshURL, body)
-//   .then(data => console.log(data))
-//   .catch(err => console.log(err));
-
-fetch(refreshURL, {
-  method: 'POST',
-  body: ({
-    'token': 'refreshToken',
-  }),
-});
-
-
-// const requestURL = 'https://jsonplaceholder.typicode.com/users';
-// xhr.responseType = 'json'
-
-
-
-
-
-
-
-
-// const body = {
-//   name: 'Rick',
-//   age: 70,
-// }
-
-
-
-// xhr.send([body]);
-// let stats = document.querySelector('.stats');
-
+getData();
